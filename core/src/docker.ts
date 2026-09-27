@@ -1,5 +1,4 @@
 import { spawn, exec, execFile, ChildProcessWithoutNullStreams, execFileSync } from "child_process"
-import { isProtectedKeyword } from "typescript/unstable/ast";
 import { promisify } from "util";
 
 const execFileAsync = promisify(execFile);
