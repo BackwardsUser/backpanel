@@ -7,29 +7,12 @@ export default class Docker {
 
   private containers: Record<string, ChildProcessWithoutNullStreams> = {};
 
-  public async getInstanceName(container_name: string) {
-    if (!container_name)
-      return "";
-
-    let curIndex = 0;
-    let noIndex = true;
-
-    while (noIndex) {
-      curIndex += 1;
-      if (curIndex == 100)
-        return null;
-      let check_name = `${container_name}${curIndex.toString().padStart(2, "0")}`.replaceAll(" ", "_");
-      try {
-        const { stdout } = await execFileAsync("docker", [
-          "inspect", check_name
-        ]);
-      } catch {
-        noIndex = false;
-        return `${container_name}${curIndex.toString().padStart(2, "0")}`.replaceAll(" ", "_");
-      }
-    }
-  }
-
+  /**
+   * Simple helper to check if a container with given name already exists
+   * Can be made public if needed elsewhere, is only private as it's only being used internally.
+   * @param name The name of the container to search for
+   * @returns (true/false) if exists
+   */
   private async containerExists(name: string) {
     try {
       const { stdout } = await execFileAsync("docker", [
@@ -46,12 +29,46 @@ export default class Docker {
     }
   }
 
-  // public createContainer({ gameId, name }: { gameId: string, name: string }) {
+  /**
+   * Creates a safename based on a given display name.  
+   *   
+   * From 0 to 99, increments by 1 until it finds an available variant of the display name:  
+   * \<container_name>##  
+   * i.e: MY_INSTANCE04 (using same naming convention as AMP)
+   * @param container_name requested display name
+   * @returns docker safename
+   */
+  public async getInstanceName(displayName: string) {
+    if (!displayName)
+      return "";
+
+    let curIndex = 0;
+    let noIndex = true;
+
+    while (noIndex) {
+      curIndex += 1;
+      if (curIndex == 100)
+        return null;
+      let checkName = `${displayName}${curIndex.toString().padStart(2, "0")}`.replaceAll(" ", "_").toUpperCase();
+
+      if (!this.containerExists(checkName)) {
+        noIndex = false;
+        return checkName;
+      }
+    }
+  }
+
+  /**
+   * Method used to create a container for a given game (id) with the given name.
+   * Produces it's own ID and safe name (appends an index to the end of the requested name)
+   * @param name The name of the container
+   * @param gameId (UNUSED) ID of the game the container is to be made for (used to get instance info)
+   * @returns \{ containerId, ChildProcess }
+   */
   public async createContainer(name: string) {
     if (!name) return;
 
-    if (!this.containerExists(name))
-      return null;
+
 
     const { stdout } = await execFileAsync("docker", [
       "create", "--rm", "--name", "test", "interval-test",
