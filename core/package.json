@@ -1,0 +1,21 @@
+{
+  "name": "core",
+  "version": "0.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "Backwards",
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "scripts": {
+    "dev": "tsx --watch ./src/index.ts"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.2"
+  }
+}

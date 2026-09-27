@@ -1,0 +1,12 @@
+{
+  "name": "webpanel",
+  "version": "0.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "Backwards",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "tsx --watch src/index.ts"
+  }
+}
