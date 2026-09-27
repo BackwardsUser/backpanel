@@ -30,20 +30,28 @@ export default class Docker {
     }
   }
 
+  private async containerExists(name: string) {
+    try {
+      const { stdout } = await execFileAsync("docker", [
+        "ps", "-a", "--filter", `name=^/${name}$`, "--format", "{{.Names}}",
+      ]);
+      if (stdout.trim()) return;
+    } catch (err: unknown) {
+      const stderr =
+        typeof err === "object" && err !== null && "stderr" in err
+          ? String(err.stderr)
+          : "";
+      if (/no such (object|container)/i.test(stderr)) return false;
+      throw err;
+    }
+  }
+
   // public createContainer({ gameId, name }: { gameId: string, name: string }) {
   public async createContainer(name: string) {
     if (!name) return;
-    try {
-      const { stdout: probeOut } = await execFileAsync("docker", [
-        "inspect", name
-      ]);
-      if (probeOut)
-        return;
-    } catch {
-      // pass (this is the expectation) 
-    }
 
-    return
+    if (!this.containerExists(name))
+      return null;
 
     const { stdout } = await execFileAsync("docker", [
       "create", "--rm", "--name", "test", "interval-test",
