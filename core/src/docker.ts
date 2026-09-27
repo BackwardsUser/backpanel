@@ -1,4 +1,4 @@
-import { spawn, exec, execFile, ChildProcessWithoutNullStreams, execFileSync } from "child_process"
+import { spawn, execFile, ChildProcessWithoutNullStreams } from "child_process"
 import { promisify } from "util";
 
 const execFileAsync = promisify(execFile);
