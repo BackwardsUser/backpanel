@@ -88,4 +88,13 @@ export default class Docker {
       return null;
     }
   }
+
+  public async rmContainer(containerId: string) {
+    try {
+      spawn("docker", ["rm", containerId])
+      return containerId;
+    } catch {
+      return null;
+    }
+  }
 }
