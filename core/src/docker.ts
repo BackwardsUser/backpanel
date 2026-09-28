@@ -5,7 +5,8 @@ const execFileAsync = promisify(execFile);
 
 export default class Docker {
 
-  private containers: Record<string, ChildProcessWithoutNullStreams> = {};
+  // container_id: string, container_safename: string
+  private containers: Record<string, string> = {};
 
   /**
    * Simple helper to check if a container with given name already exists
@@ -30,6 +31,7 @@ export default class Docker {
   }
 
   /**
+   * Can this be optimized?  
    * Creates a safename based on a given display name.  
    *   
    * From 0 to 99, increments by 1 until it finds an available variant of the display name:  
@@ -50,8 +52,8 @@ export default class Docker {
       if (curIndex == 100)
         return null;
       let checkName = `${displayName}${curIndex.toString().padStart(2, "0")}`.replaceAll(" ", "_").toUpperCase();
-
-      if (!this.containerExists(checkName)) {
+      const containerExists = await this.containerExists(checkName);
+      if (!containerExists) {
         noIndex = false;
         return checkName;
       }
@@ -61,35 +63,29 @@ export default class Docker {
   /**
    * Method used to create a container for a given game (id) with the given name.
    * Produces it's own ID and safe name (appends an index to the end of the requested name)
-   * @param name The name of the container
+   * @param displayName The name of the container
    * @param gameId (UNUSED) ID of the game the container is to be made for (used to get instance info)
    * @returns \{ containerId, ChildProcess }
    */
-  public async createContainer(name: string) {
-    if (!name) return;
-
-
+  public async createContainer(safeName: string) {
+    if (!safeName) return;
 
     const { stdout } = await execFileAsync("docker", [
-      "create", "--rm", "--name", "test", "interval-test",
+      "create", "--name", safeName, "interval-test",
     ]);
     const containerId = stdout.trim();
     console.log(`Created Container with ID: ${containerId}`);
-    const proc = spawn("docker", ["start", "-a", containerId]);
-    this.containers[containerId] = proc;
+    this.containers[containerId] = safeName;
+    return { containerId, safeName }
+  }
 
-    proc.stdout.on("data", (chunk: Buffer) => {
-      console.log(`message from container: ${chunk.toString().trimEnd()}`);
-    });
-    proc.stderr.on("data", (chunk: Buffer) => {
-      console.error(`container stderr: ${chunk.toString().trimEnd()}`);
-    });
-    proc.on("error", err => console.error("Failed to start docker:", err));
-    proc.on("close", code => {
-      console.log(`Container closed with code ${code}`);
-      delete this.containers[containerId];
-    });
-
-    return { containerId, proc }
+  public async startContainer(containerId: string) {
+    try {
+      spawn("docker", ["start", "-a", containerId])
+      return containerId;
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 }
