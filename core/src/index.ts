@@ -26,20 +26,25 @@ app.post('/create', async (req, res) => {
     return;
   }
 
+  const instanceName = await docker.getInstanceName(data.name);
+  if (!instanceName) {
+    res.status(400).send("Could not create instance safename for the given displayname.");
+    return;
+  }
+
   const instanceData = {
     displayName: data.name,
-    instanceName: await docker.getInstanceName(data.name)
+    instanceName
   }
 
   console.log(instanceData);
 
-  docker.createContainer("test");
+  await docker.createContainer(instanceData.instanceName);
   res.status(201).send("Successfully Created Container.");
 });
 
 /* Websocket Server */
 
-
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`Server Core opened on port: ${PORT}`)
 });
