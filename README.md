@@ -3,7 +3,7 @@
 Hobby project in alternative to Pterodactyl, AMP and similar homehosted gamepanels.  
   
 AMP, for a CA$30 (thankfully lifetime) product feels super unpolished, broken and weird in places.  
-Pterodactyl is a bit of a nightmare to install.  
+Pterodactyl is a bit of a nightmare to install. (in my experience) 
   
 This will be the best of both worlds, a nice, functional, easy to install Gamepanel system.  
 
