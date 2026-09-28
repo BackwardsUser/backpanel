@@ -21,3 +21,6 @@ Even once a main branch is created, there will likely still be little there in t
 * Nodes will have a "child-parent" relationship, a node can declare children and parents allowing for nested nodes (likely not necessary)
 * Nodes with web panels that are listed as "children" will not lose access to instance creation/management (unlike AMP).
 * The out-of-box web panel packaged with the core will prioritize function over form (without casting form to the side). The goal is to keep the panel as responsive as possible.
+
+## Personal Notes
+Remove names of competitors on main branch. Do not want to advertise a competitor, as well, don't really want to bash them by name... 😅
