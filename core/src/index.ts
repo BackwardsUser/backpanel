@@ -128,6 +128,7 @@ app.get('/containers', async (req, res) => {
 })
 
 /* Websocket Server */
+// for later.
 
 server.listen(PORT, async () => {
   console.log(`Server Core opened on port: ${PORT}`)
