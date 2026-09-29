@@ -119,6 +119,7 @@ app.post('/delete', (req, res) => {
 
 app.get('/containers', async (req, res) => {
   if (false && req.query["scan"] === undefined) {
+    // Cache is super tempermental and will take more work to maintain then to just make shell calls.
     console.log("Sending Cached Containers")
     res.json(docker.getCachedContainers());
   } else {
