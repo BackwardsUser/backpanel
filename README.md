@@ -1,5 +1,4 @@
-# Unnamed Gamepanel
-(name TBD)  
+# Backpanel  
 Hobby project in alternative to Pterodactyl, AMP and similar homehosted gamepanels.  
   
 AMP, for a CA$30 (thankfully lifetime) product feels super unpolished, broken and weird in places.  
